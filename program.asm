@@ -1,0 +1,73 @@
+ORG 800h
+
+GETWEIGHT
+    IN 84H
+
+VALIDATE
+    CPI 31h   
+    JC GETWEIGHT 
+    CPI 39h    
+    JNC GETWEIGHT 
+    MVI D,30H
+    SUB D
+    MOV D,A
+
+DRAWFRAM
+    CALL DRAWHOR                
+    MVI L,04H
+
+DRAW
+   
+    CALL DRAWVER
+    DCR L
+    JNZ DRAW
+    CALL DRAWHOR              
+    RST 1
+    HLT
+
+DRAWHOR
+    MVI C,08H
+    MOV B,D
+DRAWXLOOP
+    MVI A,'*'
+    RST 1
+    DCR C
+    JNZ DRAWXLOOP  
+    CALL NEWLINE  
+    MVI C,08H
+    DCR B
+    JNZ DRAWXLOOP
+    
+    RET
+
+
+DRAWVER
+    MVI A,08H
+    SUB D
+    SUB D
+    MOV C,A
+    CALL THICER
+    MVI A,' '
+DRAWYLOOP
+    RST 1
+    DCR C
+    JNZ DRAWYLOOP
+    CALL THICER
+    CALL NEWLINE
+    RET
+
+THICER
+    MOV B,D
+    MVI A,'*'
+THICERLOOP
+    DCR B
+    RST 1
+    JNZ THICERLOOP
+    RET
+
+NEWLINE
+    MVI A,0AH
+    RST 1
+    MVI A,0DH
+    RST 1
+    RET
